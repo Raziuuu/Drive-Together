@@ -32,14 +32,7 @@ import {
 
 export default function HomePage() {
   const router = useRouter();
-  const { user, isLoading: authLoading, selectedLocation, setSelectedLocation } = useAuth();
-
-  // Redirect unauthenticated visitors to start with Sign Up / Login
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.replace('/login');
-    }
-  }, [user, authLoading, router]);
+  const { user, selectedLocation, setSelectedLocation } = useAuth();
 
   const [categories, setCategories] = useState<VehicleCategory[]>([]);
   const [featuredGroups, setFeaturedGroups] = useState<Group[]>([]);
@@ -125,6 +118,50 @@ export default function HomePage() {
             <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
               Bring serious buyers together, combine your purchasing power, and negotiate stronger vehicle discounts with authorized dealerships across <strong>Mangalore, Puttur, BC Road & Uppinangady</strong>.
             </p>
+
+            {/* Quick Action Buttons */}
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              {user ? (
+                <>
+                  <Link
+                    href="/dashboard"
+                    className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm px-6 py-3 rounded-2xl shadow-sm transition"
+                  >
+                    <span>Go to My Dashboard</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    href="/dashboard/groups"
+                    className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-sm px-5 py-3 rounded-2xl transition"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-emerald-700" />
+                    <span>My Joined Groups</span>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/signup"
+                    className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm px-6 py-3 rounded-2xl shadow-md shadow-emerald-700/20 transition"
+                  >
+                    <span>Create Free Account</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    href="/login"
+                    className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-semibold text-sm px-5 py-3 rounded-2xl shadow-sm transition"
+                  >
+                    <span>Sign In with Mobile</span>
+                  </Link>
+                  <Link
+                    href="/vehicles"
+                    className="inline-flex items-center gap-2 text-slate-600 hover:text-emerald-700 font-semibold text-sm px-4 py-3 rounded-2xl transition"
+                  >
+                    <span>Explore Vehicles →</span>
+                  </Link>
+                </>
+              )}
+            </div>
 
             {/* Global Search Bar */}
             <form

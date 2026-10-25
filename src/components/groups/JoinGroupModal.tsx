@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import confetti from 'canvas-confetti';
 import { Group, Vehicle, PurchaseTimeline, Dealer } from '@/types';
 import { useAuth } from '@/context/AuthContext';
@@ -528,6 +529,18 @@ export const JoinGroupModal: React.FC<JoinGroupModalProps> = ({
               <span className="text-xl font-black text-slate-900">₹{membershipFee}</span>
             </div>
 
+            {!user && (
+              <div className="p-3 bg-emerald-50/80 border border-emerald-200 rounded-xl text-xs text-emerald-900 flex items-center justify-between gap-2">
+                <span>Sign in with your mobile number to enroll in this group.</span>
+                <Link
+                  href={`/login?redirect=/vehicles/${vehicle.id}`}
+                  className="font-bold text-emerald-800 underline shrink-0"
+                >
+                  Sign In
+                </Link>
+              </div>
+            )}
+
             <button
               onClick={handleJoin}
               disabled={isProcessing}
@@ -537,6 +550,8 @@ export const JoinGroupModal: React.FC<JoinGroupModalProps> = ({
               <span>
                 {isProcessing
                   ? 'Processing Payment...'
+                  : !user
+                  ? `Sign In & Join ${selectedMonth} Group`
                   : `Pay ₹${membershipFee} & Join ${selectedMonth} Group`}
               </span>
             </button>

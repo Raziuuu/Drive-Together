@@ -53,12 +53,20 @@ export default function DashboardLayout({
           <p className="text-xs text-slate-500 leading-relaxed">
             Access your active vehicle buyer memberships, track negotiation progress, and review dealership offers.
           </p>
-          <button
-            onClick={() => setLoginModalOpen(true)}
-            className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-3 rounded-xl transition text-sm shadow-sm"
-          >
-            Sign In with Mobile OTP
-          </button>
+          <div className="space-y-2 pt-2">
+            <Link
+              href="/login?redirect=/dashboard"
+              className="w-full inline-flex items-center justify-center bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-3 rounded-xl transition text-sm shadow-sm"
+            >
+              Sign In to Your Account
+            </Link>
+            <Link
+              href="/signup"
+              className="w-full inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-3 rounded-xl transition text-sm"
+            >
+              Create New Account
+            </Link>
+          </div>
         </div>
       </div>
     );
