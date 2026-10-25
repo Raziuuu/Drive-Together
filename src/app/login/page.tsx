@@ -14,8 +14,6 @@ import {
   CheckCircle2,
   Lock,
   Sparkles,
-  Shield,
-  UserCheck,
 } from 'lucide-react';
 
 function LoginContent() {
@@ -23,7 +21,7 @@ function LoginContent() {
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect') || '/dashboard';
 
-  const { user, sendOtp, verifyOtp, loginAsDemo } = useAuth();
+  const { user, sendOtp, verifyOtp } = useAuth();
 
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -110,11 +108,6 @@ function LoginContent() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleQuickLogin = (role: 'admin' | 'user') => {
-    loginAsDemo(role);
-    router.push(role === 'admin' ? '/admin' : redirectUrl);
   };
 
   return (
@@ -272,31 +265,6 @@ function LoginContent() {
               </div>
             </form>
           )}
-
-          {/* Quick Login Shortcuts */}
-          <div className="mt-8 pt-6 border-t border-slate-200 space-y-3">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block text-center">
-              One-Click Quick Access
-            </span>
-            <div className="grid grid-cols-2 gap-2.5">
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('admin')}
-                className="flex items-center justify-center gap-2 p-2.5 rounded-xl border border-purple-200 bg-purple-50 hover:bg-purple-100 text-purple-900 text-xs font-semibold transition"
-              >
-                <Shield className="w-3.5 h-3.5 text-purple-700" />
-                <span>Admin Login</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('user')}
-                className="flex items-center justify-center gap-2 p-2.5 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 text-xs font-semibold transition"
-              >
-                <UserCheck className="w-3.5 h-3.5 text-emerald-700" />
-                <span>Buyer Login</span>
-              </button>
-            </div>
-          </div>
 
           {/* New to DriveTogether? Register */}
           <div className="mt-6 text-center text-xs text-slate-500">

@@ -272,43 +272,6 @@ export const Navbar: React.FC = () => {
                       )}
                     </div>
 
-                    {/* Quick Demo Switcher */}
-                    <div className="px-4 py-2 border-t border-slate-100 bg-slate-50/60">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
-                        Demo Account Mode
-                      </span>
-                      <div className="grid grid-cols-2 gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            loginAsDemo('user');
-                            setUserDropdownOpen(false);
-                          }}
-                          className={`text-[11px] py-1 px-2 rounded-lg font-medium border transition ${
-                            user.role === 'user'
-                              ? 'bg-emerald-700 text-white border-emerald-700'
-                              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
-                          }`}
-                        >
-                          Buyer View
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            loginAsDemo('admin');
-                            setUserDropdownOpen(false);
-                          }}
-                          className={`text-[11px] py-1 px-2 rounded-lg font-medium border transition ${
-                            user.role === 'admin'
-                              ? 'bg-purple-700 text-white border-purple-700'
-                              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
-                          }`}
-                        >
-                          Admin View
-                        </button>
-                      </div>
-                    </div>
-
                     {/* Sign Out */}
                     <div className="pt-1 border-t border-slate-100">
                       <button
