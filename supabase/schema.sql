@@ -354,3 +354,55 @@ CREATE POLICY "Admin full access on refunds" ON public.refunds FOR ALL USING (pu
 
 DROP POLICY IF EXISTS "Admin full access on notifications" ON public.notifications;
 CREATE POLICY "Admin full access on notifications" ON public.notifications FOR ALL USING (public.is_admin());
+
+-- ====================================================================
+-- AUTOMATIC PROFILE CREATION & ADMIN MANAGEMENT
+-- ====================================================================
+
+-- Trigger to automatically create a public profile when a user registers in auth.users
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO public.profiles (id, phone_number, full_name, role)
+    VALUES (
+        new.id,
+        COALESCE(new.phone, new.raw_user_meta_data->>'phone', new.email, 'User-' || substr(new.id::text, 1, 8)),
+        COALESCE(new.raw_user_meta_data->>'full_name', 'Verified Buyer'),
+        COALESCE(new.raw_user_meta_data->>'role', 'user')
+    )
+    ON CONFLICT (id) DO UPDATE
+    SET 
+        full_name = EXCLUDED.full_name,
+        updated_at = now();
+    RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+    AFTER INSERT ON auth.users
+    FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+
+-- Helper function to promote any user to Admin by their phone number
+CREATE OR REPLACE FUNCTION public.promote_to_admin(target_phone TEXT)
+RETURNS TEXT AS $$
+DECLARE
+    cleaned_phone TEXT;
+    affected_rows INT;
+BEGIN
+    cleaned_phone := regexp_replace(target_phone, '\D', '', 'g');
+    
+    UPDATE public.profiles
+    SET role = 'admin', updated_at = now()
+    WHERE regexp_replace(phone_number, '\D', '', 'g') LIKE '%' || cleaned_phone || '%';
+
+    GET DIAGNOSTICS affected_rows = ROW_COUNT;
+
+    IF affected_rows > 0 THEN
+        RETURN 'Success: User with phone number ' || target_phone || ' has been promoted to Admin.';
+    ELSE
+        RETURN 'Notice: No existing profile found with phone ' || target_phone || '. Please sign up first, then run this.';
+    END IF;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
